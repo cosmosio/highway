@@ -1,7 +1,7 @@
 {
   "name": "highway",
   "description": "A simple and multi-purpose router.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "homepage": "https://github.com/cosmosio/highway",
   "licenses": [
     {
@@ -15,7 +15,8 @@
   ],
   "author": "Olivier Scherrer <pode.fr@gmail.com>",
   "keywords": [
-    "router"
+    "router",
+    "history"
   ],
   "repository": {
     "type": "git",
@@ -28,10 +29,11 @@
     "test": "jasmine-node test/"
   },
   "main": "index.js",
-  "devDependencies": {},
+  "devDependencies": {
+    "jasmine-node": "~1.14.3"
+  },
   "dependencies": {
     "watch-notify": "0.0.2",
-    "jasmine-node": "~1.14.3",
     "to-array": "~0.1.4"
   }
 }
