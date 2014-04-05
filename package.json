@@ -1,0 +1,37 @@
+{
+  "name": "highway",
+  "description": "A simple and multi-purpose router.",
+  "version": "0.0.1",
+  "homepage": "https://github.com/cosmosio/highway",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://raw.github.com/cosmosio/highway/master/LICENSE"
+    }
+  ],
+  "files": [
+    "LICENSE",
+    "index.js"
+  ],
+  "author": "Olivier Scherrer <pode.fr@gmail.com>",
+  "keywords": [
+    "router"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:cosmosio/highway.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cosmosio/highway/issues"
+  },
+  "scripts": {
+    "test": "jasmine-node test/"
+  },
+  "main": "index.js",
+  "devDependencies": {
+
+  },
+  "dependencies": {
+
+  }
+}
