@@ -117,7 +117,7 @@ module.exports = function RouterConstructor() {
     this.navigate = function get(route, params) {
         if (this.load.apply(this, arguments)) {
             // Before adding a new route to the history, we must clear the forward history
-            _history.splice(_currentPos +1, _history.count());
+            _history.splice(_currentPos +1, _history.length);
             _history.push(toArray(arguments));
             this.ensureMaxHistory(_history);
             _currentPos = _history.length -1;

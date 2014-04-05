@@ -28,10 +28,10 @@
     "test": "jasmine-node test/"
   },
   "main": "index.js",
-  "devDependencies": {
-
-  },
+  "devDependencies": {},
   "dependencies": {
-
+    "watch-notify": "0.0.2",
+    "jasmine-node": "~1.14.3",
+    "to-array": "~0.1.4"
   }
 }
