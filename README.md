@@ -129,6 +129,13 @@ function HashRouter() {
 }
 ```
 
+CHANGELOG
+=========
+
+### 0.0.3 - 12 APR 2015
+
+* Update to watch-notify 0.0.3
+
 
 LICENSE
 =======
