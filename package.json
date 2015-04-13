@@ -1,7 +1,7 @@
 {
   "name": "highway",
   "description": "A simple and multi-purpose router.",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "homepage": "https://github.com/cosmosio/highway",
   "licenses": [
     {
@@ -33,7 +33,7 @@
     "jasmine-node": "~1.14.3"
   },
   "dependencies": {
-    "watch-notify": "0.0.2",
-    "to-array": "~0.1.4"
+    "to-array": "~0.1.4",
+    "watch-notify": "0.0.3"
   }
 }
