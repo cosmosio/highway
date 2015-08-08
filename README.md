@@ -135,7 +135,6 @@ CHANGELOG
 ### 0.0.4 - 7 AUG 2015
 
 * Rename constructor to HighwayConstructor
-* When triggering a route, pass the route name as an argument
 * Rewrote tests to make them easier to read
 
 ### 0.0.3 - 12 APR 2015
