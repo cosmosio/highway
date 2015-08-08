@@ -14,7 +14,7 @@ var Observable = require("watch-notify"),
  * @class
  * Routing allows for navigating in an application by defining routes.
  */
-module.exports = function RouterConstructor() {
+module.exports = function HighwayConstructor() {
 
     /**
      * The routes observable (the applications use it)
