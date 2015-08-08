@@ -129,7 +129,7 @@ describe("Given Highway", function () {
                     }).not.toThrow();
                 });
             });
-            
+
             describe("When watching for route changes", function () {
                 var routeChangeHandler,
                     routeChangeHandle;
@@ -138,12 +138,12 @@ describe("Given Highway", function () {
                     routeChangeHandler = jasmine.createSpy();
                     routeChangeHandle = highway.watch(routeChangeHandler);
                 });
-                
+
                 describe("And the route changes", function () {
                     beforeEach(function () {
                         highway.navigate("route1");
                     });
-                    
+
                     it("Then calls the route change handler", function () {
                         expect(routeChangeHandler).toHaveBeenCalledWith("route1");
                     });
@@ -160,7 +160,7 @@ describe("Given Highway", function () {
                             });
 
                             it("Then doesn't trigger the route change handler", function () {
-                                expect(routeChangeHandler).not.toHaveBeenCalledWith();
+                                expect(routeChangeHandler).not.toHaveBeenCalled();
                             });
                         });
                     });
