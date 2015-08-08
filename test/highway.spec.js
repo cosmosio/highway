@@ -83,7 +83,7 @@ describe("Given Highway", function () {
                     });
                     
                     it("Then calls the route change handler", function () {
-                        expect(routeChangeHandler).toHaveBeenCalled();
+                        expect(routeChangeHandler).toHaveBeenCalledWith("route1");
                     });
 
                     describe("When not listening to route changes anymore", function () {
@@ -98,7 +98,7 @@ describe("Given Highway", function () {
                             });
 
                             it("Then doesn't trigger the route change handler", function () {
-                                expect(routeChangeHandler).not.toHaveBeenCalled();
+                                expect(routeChangeHandler).not.toHaveBeenCalledWith();
                             });
                         });
                     });
