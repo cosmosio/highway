@@ -38,7 +38,7 @@ describe("Given Highway", function () {
                 });
             });
 
-            describe("When navigate to a route with parameters", function () {
+            describe("When navigating to a route with parameters", function () {
                 beforeEach(function () {
                     highway.navigate("route2", "param1", "param2", "param3", ["param4"]);
                 });
@@ -47,15 +47,77 @@ describe("Given Highway", function () {
                     expect(routeHandler2).toHaveBeenCalledWith("param1", "param2", "param3", ["param4"]);
                 });
 
-                describe("When removing the route And navigating to it", function () {
+                describe("When navigating to another route", function () {
                     beforeEach(function () {
-                        routeHandler2.reset();
-                        highway.unset(routeHandle2);
-                        highway.navigate("route2");
+                        highway.navigate("route1");
                     });
 
-                    it("Then doesn't call the handler anymore", function () {
-                        expect(routeHandler2).not.toHaveBeenCalled();
+                    it("Then updates the history count", function () {
+                        expect(highway.getHistoryCount()).toBe(2);
+                    });
+
+                    describe("When calling back", function () {
+                        beforeEach(function () {
+                            routeHandler2.reset();
+                            highway.back();
+                        });
+
+                        it("Then calls the previous route", function () {
+                            expect(routeHandler2).toHaveBeenCalledWith("param1", "param2", "param3", ["param4"]);
+                        });
+
+                        describe("When calling forward", function () {
+                            beforeEach(function () {
+                                routeHandler1.reset();
+                                highway.forward();
+                            });
+
+                            it("Then calls the next route", function () {
+                                expect(routeHandler1).toHaveBeenCalled();
+                            });
+
+                            it("Then doesn't affect the history count", function () {
+                                expect(highway.getHistoryCount()).toBe(2);
+                            });
+
+                            describe("When clearing the history", function () {
+                                beforeEach(function () {
+                                    highway.clearHistory();
+                                });
+
+                                it("Then resets the history count", function () {
+                                    expect(highway.getHistoryCount()).toBe(0);
+                                });
+
+                                describe("When navigating back", function () {
+                                    beforeEach(function () {
+                                        routeHandler2.reset();
+                                        highway.back();
+                                    });
+
+                                    it("Then doesn't navigate to the previous route", function () {
+                                        expect(routeHandler2).not.toHaveBeenCalled();
+                                    });
+                                });
+                            });
+                        });
+                    });
+                });
+
+                describe("When removing the route", function () {
+                    beforeEach(function () {
+                        highway.unset(routeHandle2);
+                    });
+
+                    describe("And navigating to it", function () {
+                        beforeEach(function () {
+                            routeHandler2.reset();
+                            highway.navigate("route2");
+                        });
+
+                        it("Then doesn't call the handler anymore", function () {
+                            expect(routeHandler2).not.toHaveBeenCalled();
+                        });
                     });
                 });
             });
