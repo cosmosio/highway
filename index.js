@@ -1,10 +1,10 @@
 /**
-* @license highway https://github.com/cosmosio/highway
-*
-* The MIT License (MIT)
-*
-* Copyright (c) 2014-2015 Olivier Scherrer <pode.fr@gmail.com>
-*/
+ * @license highway https://github.com/cosmosio/highway
+ *
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014-2016 Olivier Scherrer <pode.fr@gmail.com>
+ */
 "use strict";
 
 var Observable = require("watch-notify"),
@@ -22,71 +22,29 @@ module.exports = function HighwayConstructor() {
      */
     var _routes = new Observable(),
 
-    /**
-     * The events observable (used by Routing)
-     * @private
-     */
-    _events = new Observable(),
+        /**
+         * The events observable (used by Routing)
+         * @private
+         */
+        _events = new Observable(),
 
-    /**
-     * The routing history
-     * @private
-     */
-    _history = [],
+        /**
+         * The routing history
+         * @private
+         */
+        _history = [],
 
-    /**
-     * For navigating through the history, remembers the current position
-     * @private
-     */
-    _currentPos = -1,
+        /**
+         * For navigating through the history, remembers the current position
+         * @private
+         */
+        _currentPos = -1,
 
-    /**
-     * The depth of the history
-     * @private
-     */
-    _maxHistory = 10;
-
-    /**
-     * Only for debugging
-     * @private
-     */
-    this.getRoutesObservable = function getRoutesObservable() {
-        return _routes;
-    };
-
-    /**
-     * Only for debugging
-     * @private
-     */
-    this.getEventsObservable = function getEventsObservable() {
-        return _events;
-    };
-
-    /**
-     * Set the maximum length of history
-     * As the user navigates through the application, the
-     * routeur keeps track of the history. Set the depth of the history
-     * depending on your need and the amount of memory that you can allocate it
-     * @param {Number} maxHistory the depth of history
-     * @returns {Boolean} true if maxHistory is equal or greater than 0
-     */
-    this.setMaxHistory = function setMaxHistory(maxHistory) {
-        if (maxHistory >= 0) {
-            _maxHistory = maxHistory;
-            return true;
-        } else {
-            return false;
-        }
-
-    };
-
-    /**
-     * Get the current max history setting
-     * @returns {Number} the depth of history
-     */
-    this.getMaxHistory = function getMaxHistory() {
-        return _maxHistory;
-    };
+        /**
+         * The max history depth
+         * @private
+         */
+        _maxHistory = 10;
 
     /**
      * Set a new route
@@ -111,52 +69,47 @@ module.exports = function HighwayConstructor() {
     /**
      * Navigate to a route
      * @param {String} route the route to navigate to
-     * @param {*} *params
+     * @param {*} as many params as necessary
      * @returns
      */
-    this.navigate = function get(route) {
-        if (this.load.apply(this, arguments)) {
-            // Before adding a new route to the history, we must clear the forward history
-            _history.splice(_currentPos +1, _history.length);
-            _history.push(toArray(arguments));
-            this.ensureMaxHistory(_history);
-            _currentPos = _history.length -1;
+    this.navigate = function navigate(route) {
+        clearForwardHistory();
+        _history.push(toArray(arguments));
+        ensureMaxHistory();
+        _currentPos = _history.length - 1;
+        load.apply(this, arguments);
+    };
+
+    /**
+     * Go back and forth in the history
+     * @param {Number} nb the number of jumps in the history. Use negative number to go back.
+     * @returns true if history exists
+     */
+    this.go = function go(nb) {
+        var history = _history[_currentPos + nb];
+        if (history) {
+            _currentPos += nb;
+            load.apply(this, history);
             return true;
         } else {
             return false;
         }
-
     };
 
     /**
-     * Ensure that history doesn't grow bigger than the max history setting
-     * @param {Store} history the history store
-     * @private
+     * Go back in the history, short for go(-1)
+     * @returns true if it was able to go back
      */
-    this.ensureMaxHistory = function ensureMaxHistory(history) {
-        var count = history.length,
-            max = this.getMaxHistory(),
-            excess = count - max;
-
-        if (excess > 0) {
-            history.splice(0, excess);
-        }
+    this.back = function back() {
+        return this.go(-1);
     };
 
     /**
-     * Actually loads the route
-     * @private
+     * Go forward in the history, short for go(1)
+     * @returns true if it was able to go forward
      */
-    this.load = function load() {
-        var copy = toArray(arguments);
-
-        if (_routes.notify.apply(_routes, copy)) {
-            copy.unshift("route");
-            _events.notify.apply(_events, copy);
-            return true;
-        } else {
-            return false;
-        }
+    this.forward = function forward() {
+        return this.go(1);
     };
 
     /**
@@ -179,12 +132,28 @@ module.exports = function HighwayConstructor() {
     };
 
     /**
-     * Get the history store, for debugging only
-     * @private
+     * Set the maximum length of history
+     * As the user navigates through the application, the
+     * router keeps track of the history. Set the depth of the history
+     * depending on your need and the amount of memory that you can allocate it
+     * @param {Number} maxHistory the depth of history
+     * @returns {Boolean} true if maxHistory is equal or greater than 0
      */
-    this.getHistoryStore = function getHistoryStore() {
-        return _history;
+    this.setMaxHistory = function setMaxHistory(maxHistory) {
+        if (maxHistory >= 0) {
+            _maxHistory = maxHistory;
+            ensureMaxHistory();
+            return true;
+        } else {
+            return false;
+        }
     };
+
+    /**
+     * Get the current max history setting
+     * @returns {Number} the depth of history
+     */
+    this.getMaxHistory = getMaxHistory;
 
     /**
      * Get the current length of history
@@ -202,35 +171,41 @@ module.exports = function HighwayConstructor() {
     };
 
     /**
-     * Go back and forth in the history
-     * @param {Number} nb the amount of history to rewind/forward
-     * @returns true if history exists
+     * Get a route from the history or the entire historic
+     * @param index
+     * @returns {*}
      */
-    this.go = function go(nb) {
-        var history = _history[_currentPos + nb];
-        if (history) {
-            _currentPos += nb;
-            this.load.apply(this, history);
-            return true;
+    this.getHistory = function getHistory(index) {
+        if (typeof index == "undefined") {
+            return _history;
         } else {
-            return false;
+            return _history[_history.length - index - 1];
         }
     };
 
-    /**
-     * Go back in the history, short for go(-1)
-     * @returns
-     */
-    this.back = function back() {
-        return this.go(-1);
-    };
+    function load() {
+        var copy = toArray(arguments);
 
-    /**
-     * Go forward in the history, short for go(1)
-     * @returns
-     */
-    this.forward = function forward() {
-        return this.go(1);
-    };
+        _routes.notify.apply(_routes, copy);
+        copy.unshift("route");
+        _events.notify.apply(_events, copy);
+    }
 
+    function getMaxHistory() {
+        return _maxHistory;
+    }
+
+    function ensureMaxHistory() {
+        var count = _history.length,
+            max = getMaxHistory(),
+            excess = count - max;
+
+        if (excess > 0) {
+            _history.splice(0, excess);
+        }
+    }
+
+    function clearForwardHistory() {
+        _history.splice(_currentPos + 1, _history.length);
+    }
 };

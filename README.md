@@ -132,6 +132,12 @@ function HashRouter() {
 CHANGELOG
 =========
 
+### 0.0.5 - 5 MAR 2016
+
+* Can now navigate to non-registered routes. They will be saved in the history and trigger the watch() callback.
+* API clean-up with private functions not revealed in the public API anymore.
+* Add specs for setMaxHistory
+
 ### 0.0.4 - 7 AUG 2015
 
 * Rename constructor to HighwayConstructor
